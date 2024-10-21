@@ -14,6 +14,7 @@ import Protected from "./components/Protected";
 import Movie from "./components/Movie";
 import Res from "./components/Res";
 import Logout from "./components/Logout";
+import AllMovies from "./components/AllMovies";
 
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
         />
         <Route path="/reservations" element={<Res />} />
         <Route path="/movie/:id" element={<Movie />} />
-        {/* <Route path="/Btnn" element={<Btnn />} /> */}
+        <Route path="/all-movies" element={<AllMovies />} />
         <Route
           path="/login"
           element={

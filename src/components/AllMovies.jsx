@@ -1,28 +1,26 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import Title from "./Title";
 
-const MovieCard = () => {
+export default function AllMovies() {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/film/three");
-        setMovies(response.data);
+        const res = await axios.get("http://localhost:3001/api/film");
+        setMovies(res.data);
       } catch (err) {
-        setError("Failed to fetch movies.");
+        setError(err);
       }
     };
-
     fetchMovies();
   }, []);
-
   if (error) return <div>{error}</div>;
-
   return (
-    <>
+    <div className="pt-24">
+      <Title text="All Movies" />
       <div className="movie-list">
         {movies.map((movie) => (
           <Link to={`/movie/${movie._id}`}>
@@ -44,13 +42,6 @@ const MovieCard = () => {
           </Link>
         ))}
       </div>
-      <div className="cnn">
-        <Link to={'/all-movies'}>
-        <button className="butn mb-20">All Movies →</button>
-        </Link>
-      </div>
-    </>
+    </div>
   );
-};
-
-export default MovieCard;
+}
