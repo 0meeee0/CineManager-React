@@ -9,7 +9,7 @@ export default function AllMovies() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/film");
+        const res = await axios.get("http://localhost:3001/api/film/");
         setMovies(res.data);
       } catch (err) {
         setError(err);

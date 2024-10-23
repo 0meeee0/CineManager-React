@@ -30,6 +30,11 @@ export default function NowShowing() {
               className="showing-img"
               src={`http://localhost:3001${movie.poster}`}
               alt=""
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOiZRsIjanQl7ypLmJRaxHnoJ5S6XVzlNT9Q&s";
+              }}
             />
           </div>
           <h2 className="showing-title">{movie.title}</h2>
