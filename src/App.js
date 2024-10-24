@@ -15,6 +15,10 @@ import Movie from "./components/Movie";
 import Res from "./components/Res";
 import Logout from "./components/Logout";
 import AllMovies from "./components/AllMovies";
+import AdminDashboard from "./components/AdminDashboard";
+import UsersM from "./components/UserM";
+import MoviesM from "./components/MoviesM";
+import SeancesM from "./components/SeancesM";
 
 function App() {
   return (
@@ -36,6 +40,11 @@ function App() {
         <Route path="/reservations" element={<Res />} />
         <Route path="/movie/:id" element={<Movie />} />
         <Route path="/all-movies" element={<AllMovies />} />
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="users" element={<UsersM />} />
+          <Route path="movies" element={<MoviesM />} />
+          <Route path="seances" element={<SeancesM />} />
+        </Route>
         <Route
           path="/login"
           element={

@@ -105,7 +105,7 @@ export default function Movie() {
   return (
     <div className="bg">
       <div className="top">
-        <div className="m-info">
+        <div className="m-info pb-10">
           <div className="mhinfo">
             <h1 className="text-6xl">{movie?.title}</h1>
             <span className="sp">Genre: {movie?.genre}</span>
