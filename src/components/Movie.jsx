@@ -10,6 +10,8 @@ export default function Movie() {
   const [error, setError] = useState(null);
   const [msg, setMsg] = useState("");
   const [cmnt, setCmnt] = useState([]);
+  const [rating, setRating] = useState()
+  const [avRating, setAvRating] = useState(0)
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
@@ -46,6 +48,15 @@ export default function Movie() {
     fetchComments();
   }, [id]);
 
+  useEffect(()=>{
+    const fetchRatings = async () => {
+      const res = await axios.get(`http://localhost:3001/api/rating/${id}`);
+      setAvRating(res.data.averageRating)
+      console.log("ratings", res.data)
+    }
+
+    fetchRatings()
+  },[id])
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!msg) return;
@@ -64,7 +75,6 @@ export default function Movie() {
           },
         }
       );
-
       setMsg("");
       const res = await axios.get(`http://localhost:3001/api/comments/${id}`);
       setCmnt(res.data);
@@ -81,6 +91,7 @@ export default function Movie() {
           <div className="mhinfo">
             <h1 className="text-6xl">{movie?.title}</h1>
             <span className="sp">Genre: {movie?.genre}</span>
+            <p>Rating: {avRating}</p>
             <div className="flex ">
               <Btnn text="Get Tickets Now" />
               <Btnn text="Watch Online Now" />
@@ -95,7 +106,7 @@ export default function Movie() {
           />
         </div>
       </div>
-      {error && <div>{error}</div>} {/* Display error message */}
+      {error && <div>{error}</div>}
       <div className="comment-section">
         <form onSubmit={handleSubmit} className="comment-form">
           <h2>Leave a Comment</h2>
@@ -121,7 +132,9 @@ export default function Movie() {
             {cmnt.map((comment) => (
               <li className="comment" key={comment._id}>
                 <div className="comment-header">
-                  <span className="com~ment-author">{comment.user_id}</span>
+                  <span className="comment-author">
+                    {comment.user_id.name}
+                  </span>
                 </div>
                 <p className="comment-body">{comment.comment}</p>
                 <span className="comment-date">
