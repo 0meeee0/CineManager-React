@@ -10,8 +10,8 @@ export default function Movie() {
   const [error, setError] = useState(null);
   const [msg, setMsg] = useState("");
   const [cmnt, setCmnt] = useState([]);
-  const [rating, setRating] = useState()
   const [avRating, setAvRating] = useState(0)
+  const [userRating, setUserRating] = useState(0);
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
@@ -38,9 +38,6 @@ export default function Movie() {
       try {
         const res = await axios.get(`http://localhost:3001/api/comments/${id}`);
         setCmnt(res.data || []);
-        console.log("data",res)
-        if(!res){
-        }
       } catch (err) {
         setError("Failed to fetch comments.");
       }
@@ -48,15 +45,14 @@ export default function Movie() {
     fetchComments();
   }, [id]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchRatings = async () => {
       const res = await axios.get(`http://localhost:3001/api/rating/${id}`);
-      setAvRating(res.data.averageRating)
-      console.log("ratings", res.data)
-    }
+      setAvRating(res.data.averageRating);
+    };
+    fetchRatings();
+  }, [id]);
 
-    fetchRatings()
-  },[id])
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!msg) return;
@@ -84,6 +80,28 @@ export default function Movie() {
     }
   };
 
+  const handleRating = async (rating) => {
+    try {
+      await axios.post(
+        "http://localhost:3001/api/rating/add",
+        {
+          user_id: userId,
+          film_id: id,
+          rating: rating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUserRating(rating);
+      setAvRating(((avRating + rating) / 2).toFixed(1))
+    } catch (err) {
+      setError("Failed to submit rating.");
+    }
+  };
+
   return (
     <div className="bg">
       <div className="top">
@@ -92,9 +110,24 @@ export default function Movie() {
             <h1 className="text-6xl">{movie?.title}</h1>
             <span className="sp">Genre: {movie?.genre}</span>
             <p>Rating: {avRating}</p>
-            <div className="flex ">
+            <div className="flex">
               <Btnn text="Get Tickets Now" />
               <Btnn text="Watch Online Now" />
+            </div>
+            <div className="pt-10">
+              <span>Rate this movie: </span>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  style={{
+                    cursor: "pointer",
+                    color: userRating >= star ? "gold" : "gray",
+                  }}
+                  onClick={() => handleRating(star)}
+                >
+                  ★
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -132,8 +165,9 @@ export default function Movie() {
             {cmnt.map((comment) => (
               <li className="comment" key={comment._id}>
                 <div className="comment-header">
-                  <span className="comment-author">
-                    {comment.user_id.name}
+                  <span className="comment-author">{comment.user_id.name}</span>
+                  <span className="bg-gray-200 text-sm p-1 rounded-md text-gray-500">
+                    {comment.user_id.role}
                   </span>
                 </div>
                 <p className="comment-body">{comment.comment}</p>
